@@ -1,0 +1,5 @@
+streamlit
+speechrecognition
+deep-translator
+gtts
+pydub
