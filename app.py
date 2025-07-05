@@ -1,24 +1,21 @@
 import streamlit as st
-from record_voice import record_voice
 from translate_text import translate_text
 from speak_text import speak_text
 
-st.set_page_config(page_title="Voice-to-Voice AI Translator", layout="centered")
+st.set_page_config(page_title="Voice-to-Voice Translator", layout="centered")
 st.title("🌐 Voice-to-Voice AI Translator")
-st.markdown("🎤 Speak in one language, get real-time voice output in another!")
+st.markdown("💬 Type your sentence to translate and hear it.")
 
-target_lang = st.selectbox("Choose target language:", ["en", "fr", "hi", "te", "es", "de"])
+# Input
+input_text = st.text_input("Enter text to translate:")
 
-if st.button("🎙 Start Translation"):
-    st.info("Listening... Please speak into the mic.")
-    original_text = record_voice()
+# Language selection
+target_lang = st.selectbox("Translate to:", ["en", "hi", "te", "fr", "es", "de"])
 
-    if "Error" in original_text:
-        st.error(original_text)
+if st.button("🔄 Translate & Speak"):
+    if input_text.strip() == "":
+        st.warning("Please enter some text.")
     else:
-        st.success(f"You said: `{original_text}`")
-        translated = translate_text(original_text, target_lang)
-        st.markdown(f"**Translated:** `{translated}`")
-
+        translated = translate_text(input_text, target_lang)
+        st.success(f"Translated: {translated}")
         speak_text(translated, lang=target_lang)
-        st.success("✅ Voice output played!")
