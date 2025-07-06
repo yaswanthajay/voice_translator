@@ -1,8 +1,8 @@
 streamlit
 gTTS
-deep-translator
 langdetect
 PyDictionary
-speechrecognition
+deep_translator
 sounddevice
 scipy
+SpeechRecognition
