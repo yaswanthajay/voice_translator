@@ -32,10 +32,10 @@ languages = {
     "Marathi": "mr"
 }
 
-# -------------------- UI --------------------
+# -------------------- UI Setup --------------------
 st.set_page_config(page_title="🌍 Translator + Meaning + Voice", layout="centered")
 st.title("🌍 Smart Translator + Word Meaning + Voice")
-st.markdown("🔤 Translate, define and speak any word or sentence in 20+ languages.")
+st.markdown("🔤 Translate, define, and listen to any word or sentence in 20+ languages.")
 
 input_text = st.text_input("Enter a word or sentence:")
 target_lang = st.selectbox("Translate to:", list(languages.keys()))
@@ -47,10 +47,11 @@ if st.button("Translate and Define"):
         st.warning("Please enter text.")
     else:
         try:
-            # Language Detection
+            # Detect source language
             source_lang_code = detect(input_text)
             st.write(f"🧠 Detected Source Language: `{source_lang_code}` → Target: `{target_lang_code}`")
 
+            # If input and target languages are the same, skip translation
             if source_lang_code == target_lang_code:
                 st.info("🌐 The word is already in the selected language. No translation needed.")
                 translated = input_text
@@ -59,7 +60,7 @@ if st.button("Translate and Define"):
                 st.success("✅ Translated Text:")
                 st.write(translated)
 
-            # Show meaning if it's a single word
+            # Show meaning if input is a single word (in source language)
             if len(input_text.strip().split()) == 1:
                 meaning = dictionary.meaning(input_text)
                 if meaning:
@@ -69,16 +70,15 @@ if st.button("Translate and Define"):
                 else:
                     st.warning("No meaning found.")
 
-            # Speak
+            # Text-to-speech output
             st.subheader("🔊 Listen")
             audio_filename = f"{uuid.uuid4()}.mp3"
-            tts = gTTS(translated, lang=target_lang_code)
+            tts = gTTS(text=translated, lang=target_lang_code)
             tts.save(audio_filename)
-            audio_file = open(audio_filename, "rb")
-            st.audio(audio_file.read(), format="audio/mp3")
-            audio_file.close()
+            with open(audio_filename, "rb") as audio_file:
+                audio_bytes = audio_file.read()
+                st.audio(audio_bytes, format="audio/mp3")
             os.remove(audio_filename)
 
         except Exception as e:
             st.error(f"❌ Error: {e}")
-update app.py code
