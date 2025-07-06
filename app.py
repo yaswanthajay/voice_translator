@@ -47,20 +47,19 @@ if st.button("Translate and Define"):
         st.warning("Please enter text.")
     else:
         try:
-            # Detect language
+            # Language Detection
             source_lang_code = detect(input_text)
             st.write(f"🧠 Detected Source Language: `{source_lang_code}` → Target: `{target_lang_code}`")
 
-            # Translate
             if source_lang_code == target_lang_code:
-                st.info("🌐 The word is already in the selected language.")
+                st.info("🌐 The word is already in the selected language. No translation needed.")
                 translated = input_text
             else:
                 translated = GoogleTranslator(source='auto', target=target_lang_code).translate(input_text)
                 st.success("✅ Translated Text:")
                 st.write(translated)
 
-            # Meaning (only for single words)
+            # Show meaning if it's a single word
             if len(input_text.strip().split()) == 1:
                 meaning = dictionary.meaning(input_text)
                 if meaning:
@@ -70,16 +69,16 @@ if st.button("Translate and Define"):
                 else:
                     st.warning("No meaning found.")
 
-            # Voice Output
-            st.subheader("🔊 Listen to Translation")
+            # Speak
+            st.subheader("🔊 Listen")
             audio_filename = f"{uuid.uuid4()}.mp3"
-            tts = gTTS(text=translated, lang=target_lang_code)
+            tts = gTTS(translated, lang=target_lang_code)
             tts.save(audio_filename)
-
-            with open(audio_filename, "rb") as audio_file:
-                st.audio(audio_file.read(), format="audio/mp3")
-
+            audio_file = open(audio_filename, "rb")
+            st.audio(audio_file.read(), format="audio/mp3")
+            audio_file.close()
             os.remove(audio_filename)
 
         except Exception as e:
             st.error(f"❌ Error: {e}")
+update app.py code
