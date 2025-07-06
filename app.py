@@ -46,6 +46,8 @@ input_text = ""
 if option == "🎙️ Upload Audio (.wav)":
     audio_file = st.file_uploader("Upload .wav audio file", type=["wav"])
     if audio_file is not None:
+        # Play uploaded audio
+        st.audio(audio_file, format="audio/wav")
         try:
             recognizer = sr.Recognizer()
             with sr.AudioFile(audio_file) as source:
@@ -90,8 +92,8 @@ if st.button("🌍 Translate and Speak"):
                 else:
                     st.warning("No meaning found in dictionary.")
 
-            # Text to Speech
-            st.subheader("🔊 Listen to Translation")
+            # Text to Speech for translated text
+            st.subheader("🔊 Listen to Translated Text")
             audio_filename = f"{uuid.uuid4()}.mp3"
             tts = gTTS(translated, lang=target_lang_code)
             tts.save(audio_filename)
