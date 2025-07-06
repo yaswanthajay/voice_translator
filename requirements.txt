@@ -4,4 +4,4 @@ deep-translator
 PyDictionary
 langdetect
 SpeechRecognition
-
+pyaudio
