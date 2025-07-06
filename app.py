@@ -1,56 +1,48 @@
 import streamlit as st
-from googletrans import Translator
+from deep_translator import GoogleTranslator
+from gtts import gTTS
+import os
+import requests
 
-# Supported languages and their ISO codes
-languages = {
-    "English": "en",
-    "Hindi": "hi",
-    "Tamil": "ta",
-    "Telugu": "te",
-    "Kannada": "kn",
-    "Gujarati": "gu",
-    "Marathi": "mr",
-    "Bengali": "bn",
-    "Punjabi": "pa",
-    "Spanish": "es",
-    "French": "fr",
-    "German": "de",
-    "Japanese": "ja",
-    "Chinese (Simplified)": "zh-cn",
-    "Arabic": "ar"
-}
+# Title
+st.title("🔤 Word Translator + Meaning + Voice Output")
 
-st.set_page_config(page_title="Dual Translator + Transliterator", layout="wide")
-st.title("🌐 Dual Translator + Transliterator")
-st.markdown(
-    "Enter text and select a target language. "
-    "You’ll get both the **translated meaning** and the **transliteration**."
-)
+# Input word
+word = st.text_input("Enter a word:")
 
-# Initialize the translator once
-translator = Translator()
+# Target language selection
+languages = GoogleTranslator.get_supported_languages(as_dict=True)
+language_names = list(languages.keys())
+selected_language = st.selectbox("Select language to translate to:", language_names)
 
-text = st.text_area("📝 Enter text to translate:", height=150)
-target_lang = st.selectbox("🎯 Select target language:", list(languages.keys()))
-lang_code = languages[target_lang]
-
-if st.button("🔄 Translate & Transliterate"):
-    if not text.strip():
-        st.warning("Please enter some text first.")
+# Button
+if st.button("Translate and Explain"):
+    if word.strip() == "":
+        st.warning("Please enter a word.")
     else:
         try:
-            # Perform translation
-            result = translator.translate(text, dest=lang_code)
-            translated = result.text
-            transliterated = result.pronunciation or translated
+            # Translate
+            translated = GoogleTranslator(source='auto', target=languages[selected_language]).translate(word)
+            st.success(f"Translated to {selected_language}: {translated}")
 
-            col1, col2 = st.columns(2)
-            with col1:
-                st.subheader("🈳 Translated Meaning")
-                st.success(translated)
-            with col2:
-                st.subheader("🔤 Transliteration (Script)")
-                st.info(transliterated)
+            # Meaning from Dictionary API
+            try:
+                response = requests.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}")
+                if response.status_code == 200:
+                    data = response.json()
+                    meanings = data[0]['meanings'][0]['definitions'][0]['definition']
+                    st.info(f"Meaning in English: {meanings}")
+                else:
+                    st.warning("Meaning not found. Try another word.")
+            except Exception as e:
+                st.error(f"Error fetching meaning: {e}")
 
+            # Generate speech for the translated word
+            tts = gTTS(translated, lang=languages[selected_language])
+            audio_file = "translated_audio.mp3"
+            tts.save(audio_file)
+
+            # Play audio
+            st.audio(audio_file, format='audio/mp3')
         except Exception as e:
-            st.error(f"Error during translation: {e}")
+            st.error(f"Translation error: {e}")
