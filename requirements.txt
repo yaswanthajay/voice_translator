@@ -3,3 +3,5 @@ gtts
 deep-translator
 PyDictionary
 langdetect
+SpeechRecognition
+
