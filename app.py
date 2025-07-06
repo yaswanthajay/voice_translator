@@ -11,9 +11,12 @@ st.title("🔤 Word Translator + Meaning + Voice Output")
 word = st.text_input("Enter a word:")
 
 # Target language selection
-languages = GoogleTranslator.get_supported_languages(as_dict=True)
+# Get supported languages and convert to dictionary format
+language_list = GoogleTranslator.get_supported_languages()
+languages = {lang.capitalize(): lang for lang in language_list}
 language_names = list(languages.keys())
 selected_language = st.selectbox("Select language to translate to:", language_names)
+
 
 # Button
 if st.button("Translate and Explain"):
