@@ -1,54 +1,52 @@
 import streamlit as st
 from deep_translator import GoogleTranslator
-from PyDictionary import PyDictionary
-from gtts import gTTS
-import os
 
-# ----------------------------- Setup -----------------------------
-dictionary = PyDictionary()
-
+# Language options with language codes
 languages = {
-    "English": "en", "Mandarin Chinese": "zh-CN", "Hindi": "hi", "Spanish": "es", "French": "fr",
-    "Arabic": "ar", "Bengali": "bn", "Russian": "ru", "Portuguese": "pt", "Urdu": "ur",
-    "German": "de", "Japanese": "ja", "Tamil": "ta", "Telugu": "te", "Italian": "it",
-    "Korean": "ko", "Turkish": "tr", "Vietnamese": "vi", "Indonesian": "id", "Marathi": "mr"
+    "English": "en",
+    "Hindi": "hi",
+    "Tamil": "ta",
+    "Telugu": "te",
+    "Kannada": "kn",
+    "Gujarati": "gu",
+    "Marathi": "mr",
+    "Bengali": "bn",
+    "Punjabi": "pa",
+    "Spanish": "es",
+    "French": "fr",
+    "German": "de",
+    "Japanese": "ja",
+    "Chinese": "zh-CN",
+    "Arabic": "ar"
 }
 
-# ---------------------------- UI ----------------------------
-st.set_page_config(page_title="🌍 AI Word Translator + Meaning + Voice", layout="centered")
-st.title("🌍 Smart Translator + Word Meaning + Voice")
-st.markdown("🔤 Translate, define and speak any word or sentence in over 20 languages.")
+# Streamlit UI
+st.set_page_config(page_title="🌐 Dual Language Translator", layout="centered")
+st.title("🌐 AI Translator + Script Converter (Transliteration)")
+st.markdown("🔤 Enter a sentence, get **translated** meaning and **transliterated** script.")
 
-input_text = st.text_input("Enter a word or sentence:")
-target_lang = st.selectbox("Select language to translate to:", list(languages.keys()))
-target_lang_code = languages[target_lang]
+# Input
+text = st.text_input("Enter text to translate:")
+selected_lang = st.selectbox("Select target language:", list(languages.keys()))
+lang_code = languages[selected_lang]
 
-# ------------------------- Main Features --------------------------
-if st.button("Translate and Define"):
-    if input_text.strip() == "":
-        st.warning("Please enter some text.")
+# Process
+if st.button("Translate & Transliterate"):
+    if text.strip() == "":
+        st.warning("Please enter text.")
     else:
         try:
-            # Translate full text
-            translated = GoogleTranslator(source='auto', target=target_lang_code).translate(input_text)
-            st.success("✅ Translated Text:")
-            st.write(translated)
+            # Translate
+            translated = GoogleTranslator(source='auto', target=lang_code).translate(text)
 
-            # Show meaning for single word
-            if len(input_text.strip().split()) == 1:
-                meaning = dictionary.meaning(input_text)
-                if meaning:
-                    st.info("📚 Meaning:")
-                    for pos, defs in meaning.items():
-                        st.markdown(f"**{pos}:** {', '.join(defs[:2])}")
-                else:
-                    st.warning("No meaning found.")
+            # Transliterate (convert script)
+            transliterated = GoogleTranslator(source='auto', target=lang_code).transliterate(text)
 
-            # Speak translated output
-            if st.button("🔊 Speak Translated Text"):
-                tts = gTTS(translated, lang=target_lang_code)
-                tts.save("translated.mp3")
-                st.audio("translated.mp3", format="audio/mp3")
+            st.subheader("🔁 Translated Text:")
+            st.success(translated)
+
+            st.subheader("✍️ Transliteration (Script Change Only):")
+            st.info(transliterated)
 
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"❌ Error: {e}")
