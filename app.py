@@ -3,6 +3,7 @@ from deep_translator import GoogleTranslator
 from PyDictionary import PyDictionary
 from gtts import gTTS
 import os
+import uuid
 
 # ----------------------------- Setup -----------------------------
 dictionary = PyDictionary()
@@ -60,11 +61,16 @@ if st.button("Translate and Define"):
                 else:
                     st.warning("No meaning found.")
 
-            # Speak translated output
-            if st.button("🔊 Speak Translated Text"):
+            # Speak translated output (auto plays on next button)
+            st.subheader("🔊 Hear the Translated Text")
+            if translated.strip():
+                audio_filename = f"{uuid.uuid4()}.mp3"
                 tts = gTTS(translated, lang=target_lang_code)
-                tts.save("translated.mp3")
-                st.audio("translated.mp3", format="audio/mp3")
+                tts.save(audio_filename)
+                audio_file = open(audio_filename, "rb")
+                st.audio(audio_file.read(), format="audio/mp3")
+                audio_file.close()
+                os.remove(audio_filename)
 
         except Exception as e:
             st.error(f"Error: {e}")
