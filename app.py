@@ -8,10 +8,26 @@ import os
 dictionary = PyDictionary()
 
 languages = {
-    "English": "en", "Mandarin Chinese": "zh-CN", "Hindi": "hi", "Spanish": "es", "French": "fr",
-    "Arabic": "ar", "Bengali": "bn", "Russian": "ru", "Portuguese": "pt", "Urdu": "ur",
-    "German": "de", "Japanese": "ja", "Tamil": "ta", "Telugu": "te", "Italian": "it",
-    "Korean": "ko", "Turkish": "tr", "Vietnamese": "vi", "Indonesian": "id", "Marathi": "mr"
+    "English": "en",
+    "Mandarin Chinese": "zh-CN",
+    "Hindi": "hi",
+    "Spanish": "es",
+    "French": "fr",
+    "Arabic": "ar",
+    "Bengali": "bn",
+    "Russian": "ru",
+    "Portuguese": "pt",
+    "Urdu": "ur",
+    "German": "de",
+    "Japanese": "ja",
+    "Tamil": "ta",
+    "Telugu": "te",
+    "Italian": "it",
+    "Korean": "ko",
+    "Turkish": "tr",
+    "Vietnamese": "vi",
+    "Indonesian": "id",
+    "Marathi": "mr"
 }
 
 # ---------------------------- UI ----------------------------
