@@ -34,9 +34,9 @@ languages = {
 }
 
 # -------------------- UI --------------------
-st.set_page_config(page_title="🌍 Smart Voice Translator", layout="centered")
-st.title("🌍 Smart Voice Translator + Dictionary + Speech")
-st.markdown("🎤 Speak or type a word/sentence → get translation, meaning, and audio.")
+st.set_page_config(page_title=" Smart Voice Translator", layout="centered")
+st.title(" Smart Voice Translator + Dictionary + Speech")
+st.markdown(" Speak or type a word/sentence → get translation, meaning, and audio.")
 
 # Voice Input
 use_voice = st.checkbox("🎙 Use microphone to input")
@@ -48,18 +48,18 @@ if use_voice:
         audio = recognizer.listen(source, timeout=5)
     try:
         input_text = recognizer.recognize_google(audio)
-        st.success(f"✅ You said: `{input_text}`")
+        st.success(f" You said: `{input_text}`")
     except Exception as e:
         st.error(f"Speech Error: {e}")
         input_text = ""
 else:
-    input_text = st.text_input("💬 Enter text manually:")
+    input_text = st.text_input(" Enter text manually:")
 
-target_lang = st.selectbox("🌐 Translate to:", list(languages.keys()))
+target_lang = st.selectbox(" Translate to:", list(languages.keys()))
 target_lang_code = languages[target_lang]
 
 # -------------------- Main Logic --------------------
-if st.button("🌍 Translate and Define"):
+if st.button(" Translate and Define"):
     if not input_text.strip():
         st.warning("Please provide text input.")
     else:
@@ -74,21 +74,21 @@ if st.button("🌍 Translate and Define"):
                 st.info("Input is already in the target language.")
             else:
                 translated = GoogleTranslator(source='auto', target=target_lang_code).translate(input_text)
-                st.success("✅ Translated Text:")
+                st.success(" Translated Text:")
                 st.write(translated)
 
             # Dictionary Meaning (if word only)
             if len(input_text.strip().split()) == 1:
                 meaning = dictionary.meaning(input_text)
                 if meaning:
-                    st.info("📚 Word Meaning:")
+                    st.info(" Word Meaning:")
                     for pos, defs in meaning.items():
                         st.markdown(f"**{pos}**: {', '.join(defs[:2])}")
                 else:
                     st.warning("❌ No meaning found.")
 
             # Text to Speech
-            st.subheader("🔊 Listen to Translation")
+            st.subheader(" Listen to Translation")
             audio_filename = f"{uuid.uuid4()}.mp3"
             tts = gTTS(translated, lang=target_lang_code)
             tts.save(audio_filename)
